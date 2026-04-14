@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fond bleu nuit plein bord (maskable safe zone) -->
+  <rect width="512" height="512" fill="#1a2744"/>
+  <!-- Halo or subtil -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#c9a84c" stroke-width="6" opacity="0.3"/>
+  <!-- Lettre C stylisée -->
+  <path d="M316 180 C316 180 280 152 240 152 C190 152 152 198 152 256 C152 314 190 360 240 360 C280 360 316 332 316 332"
+        stroke="#c9a84c" stroke-width="38" stroke-linecap="round" fill="none"/>
+  <!-- Apostrophe / point click -->
+  <circle cx="332" cy="172" r="18" fill="#c9a84c"/>
+  <line x1="332" y1="196" x2="332" y2="228" stroke="#c9a84c" stroke-width="18" stroke-linecap="round"/>
+</svg>
