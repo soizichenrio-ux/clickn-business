@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Click'n Business — Vie administrative</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a2744">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="apple-mobile-web-app-title" content="Click'n Business">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  :root{--c:#1a2744;--cl:#2d3f6e;--clight:#e8ecf5;--or:#c9a84c;--orc:#e8d5a3;--bg:#faf8f4;--txt:#1a2744;--txts:#5a6480;--bdr:rgba(26,39,68,0.15);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{overflow-x:hidden;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+  header{position:fixed;top:0;left:0;right:0;z-index:100;padding-top:60px;padding-left:1.5rem;padding-right:1.5rem;padding-bottom:0.75rem;background:var(--bg);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;}
+  .hl{display:flex;align-items:center;gap:.75rem;}
+  .back{width:36px;height:36px;border-radius:50%;background:var(--clight);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--c);text-decoration:none;font-size:1rem;}
+  .back:hover{background:rgba(26,39,68,.2);}
+  .bn{display:flex;flex-direction:column;}
+  .bn span:first-child{font-family:'Playfair Display',serif;font-size:.75rem;color:var(--txts);}
+  .bn span:last-child{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--c);line-height:1;}
+  .hs{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--txts);}
+  .sd{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:sd 2s ease-in-out infinite;}
+  @keyframes sd{0%,100%{opacity:1}50%{opacity:.4}}
+  .ha{display:flex;align-items:center;gap:.5rem;}
+  .mt{width:36px;height:36px;border-radius:50%;background:var(--clight);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--c);font-size:1rem;transition:all .2s;}
+  .mt:hover,.mt.on{background:var(--c);color:white;}
+  .nb{padding:.45rem 1rem;border-radius:100px;background:var(--c);color:white;border:none;cursor:pointer;font-size:.8rem;font-weight:500;font-family:'DM Sans',sans-serif;}
+  .nb:hover{background:var(--cl);}
+  .ca{flex:1;overflow-y:auto;padding:calc(env(safe-area-inset-top) + 3.5rem) 1.5rem 1.5rem;display:flex;flex-direction:column;gap:1rem;scroll-behavior:smooth;}
+  .ca::-webkit-scrollbar{width:4px;}
+  .ca::-webkit-scrollbar-thumb{background:rgba(26,39,68,.2);border-radius:2px;}
+  .wm{display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem 1rem;gap:1rem;}
+  .wi{width:56px;height:56px;background:var(--clight);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
+  .wm h2{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--c);font-weight:700;}
+  .wm p{font-size:.88rem;color:var(--txts);line-height:1.65;max-width:340px;font-weight:300;}
+  .ws{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:.5rem;}
+  .sb{padding:.5rem 1rem;border-radius:100px;background:var(--clight);border:1px solid var(--bdr);color:var(--c);font-size:.8rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+  .sb:hover{background:var(--c);color:white;}
+  .mr{display:flex;gap:.6rem;align-items:flex-end;animation:mi .3s ease;}
+  @keyframes mi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .mr.u{flex-direction:row-reverse;}
+  .av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;}
+  .mr.a .av{background:var(--c);color:var(--or);font-family:'Playfair Display',serif;}
+  .mr.u .av{background:var(--orc);color:var(--c);}
+  .bb{max-width:78%;padding:.85rem 1.1rem;border-radius:18px;font-size:.9rem;line-height:1.7;}
+  .mr.a .bb{background:white;border:1px solid var(--bdr);border-radius:18px 18px 18px 4px;}
+  .mr.u .bb{background:var(--c);color:white;border-radius:18px 18px 4px 18px;}
+  .ti{display:flex;gap:.6rem;align-items:flex-end;}
+  .tb{background:white;border:1px solid var(--bdr);border-radius:18px 18px 18px 4px;padding:.85rem 1.1rem;display:flex;gap:4px;align-items:center;}
+  .td{width:6px;height:6px;border-radius:50%;background:var(--c);animation:td 1.2s ease-in-out infinite;}
+  .td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+  @keyframes td{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+  .ia{padding:1rem 1.5rem 1.25rem;background:var(--bg);border-top:1px solid var(--bdr);flex-shrink:0;}
+  .ir{display:flex;gap:.6rem;align-items:flex-end;background:white;border:1.5px solid var(--bdr);border-radius:16px;padding:.6rem .6rem .6rem 1rem;transition:border-color .2s;}
+  .ir:focus-within{border-color:var(--c);box-shadow:0 0 0 3px rgba(26,39,68,.08);}
+  .mi2{flex:1;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--txt);background:transparent;resize:none;max-height:120px;min-height:24px;line-height:1.5;}
+  .mi2::placeholder{color:var(--txts);}
+  .iac{display:flex;gap:.4rem;align-items:center;}
+  .ub{width:34px;height:34px;border-radius:10px;background:var(--clight);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--c);font-size:.9rem;}
+  .ub:hover{background:var(--c);color:white;}
+  .sndb{width:34px;height:34px;border-radius:10px;background:var(--c);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:.9rem;}
+  .sndb:hover{background:var(--cl);}
+  .sndb:disabled{background:#ccc;cursor:not-allowed;}
+  .ih{font-size:.72rem;color:var(--txts);text-align:center;margin-top:.6rem;}
+  .mb{display:none;align-items:center;justify-content:center;gap:1rem;padding:.75rem;background:var(--clight);border-radius:12px;margin-bottom:.75rem;}
+  .mb.on{display:flex;}
+  .mw{display:flex;gap:3px;align-items:center;}
+  .mw span{display:block;width:3px;background:var(--c);border-radius:2px;animation:wv 1s ease-in-out infinite;}
+  .mw span:nth-child(1){height:8px}.mw span:nth-child(2){height:16px;animation-delay:.1s}.mw span:nth-child(3){height:20px;animation-delay:.2s}.mw span:nth-child(4){height:16px;animation-delay:.3s}.mw span:nth-child(5){height:8px;animation-delay:.4s}
+  @keyframes wv{0%,100%{transform:scaleY(.5)}50%{transform:scaleY(1)}}
+  .ms{font-size:.82rem;color:var(--c);font-weight:500;}
+  .mstop{padding:.3rem .75rem;border-radius:100px;background:var(--c);color:white;border:none;cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif;}
+  .fp{display:none;align-items:center;gap:.6rem;padding:.5rem .75rem;background:var(--clight);border-radius:8px;margin-bottom:.5rem;font-size:.8rem;color:var(--c);}
+  .fp.on{display:flex;}
+  .fr{margin-left:auto;cursor:pointer;color:var(--c);background:none;border:none;font-size:1rem;}
+  .em{padding:.75rem;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;font-size:.82rem;color:#991b1b;}
+  @media(max-width:600px){.bb{max-width:88%}.ca{padding:calc(env(safe-area-inset-top) + 3.5rem) 1rem 1rem}.ia{padding:.75rem 1rem 1rem}}
+  .auth-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;}
+  .auth-overlay.on{display:flex;}
+  .auth-card{background:#faf8f4;border-radius:20px;padding:2rem;width:min(360px,90vw);box-shadow:0 20px 60px rgba(0,0,0,.15);position:relative;}
+  .auth-card h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--c);margin-bottom:.25rem;}
+  .auth-card p{font-size:.82rem;color:var(--txts);margin-bottom:1.5rem;}
+  .auth-field{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1rem;}
+  .auth-field label{font-size:.78rem;font-weight:500;color:var(--txt);}
+  .auth-field input{border:1.5px solid var(--bdr);border-radius:10px;padding:.65rem .9rem;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;background:white;color:var(--txt);}
+  .auth-field input:focus{border-color:var(--c);}
+  .auth-btn{width:100%;padding:.75rem;border-radius:12px;background:var(--c);color:white;border:none;cursor:pointer;font-size:.9rem;font-weight:500;font-family:'DM Sans',sans-serif;margin-top:.5rem;}
+  .auth-btn:hover{background:var(--cl);}
+  .auth-btn:disabled{background:#ccc;cursor:not-allowed;}
+  .auth-switch{text-align:center;margin-top:1rem;font-size:.82rem;color:var(--txts);}
+  .auth-switch a{color:var(--c);cursor:pointer;text-decoration:underline;}
+  .auth-err{border-radius:8px;padding:.6rem .8rem;font-size:.8rem;margin-bottom:.75rem;display:none;}
+  .auth-err.on{display:block;}
+  .auth-err.err{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;}
+  .auth-err.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;}
+  .auth-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--txts);}
+  .ua{display:flex;align-items:center;gap:.5rem;}
+  .ue{font-size:.78rem;color:var(--txts);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ulb{padding:.45rem .8rem;border-radius:100px;background:var(--clight);border:1px solid var(--bdr);color:var(--c);font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .ulb:hover{opacity:.8;}
+</style>
+</head>
+<body>
+<header>
+  <div class="hl">
+    <a href="/" class="back">←</a>
+    <div class="bn"><span>Click'n</span><span>Business</span></div>
+  </div>
+  <div class="hs"><div class="sd"></div><span>Agent disponible</span></div>
+  <div class="ha">
+    <button class="mt" id="mt" onclick="toggleMic()">🎙️</button>
+    <div id="auth-ui"><button class="nb" onclick="openAuth()">Se connecter</button></div>
+    <button class="nb" onclick="newConv()">Nouvelle conversation</button>
+  </div>
+</header>
+
+<div class="ca" id="ca">
+  <div class="wm" id="wm">
+    <div class="wi">🏠</div>
+    <h2>Bienvenue sur Click'n Business</h2>
+    <p>Votre expert admin du quotidien. Uploadez un document ou décrivez votre situation — je trouve la bonne casquette.</p>
+    <div class="ws">
+      <button class="sb" onclick="ss(this.textContent)">J'ai reçu un courrier des impôts</button>
+      <button class="sb" onclick="ss(this.textContent)">Mon propriétaire ne répond pas</button>
+      <button class="sb" onclick="ss(this.textContent)">Je veux renégocier mon assurance</button>
+      <button class="sb" onclick="ss(this.textContent)">Quels sont mes droits CAF ?</button>
+      <button class="sb" onclick="ss(this.textContent)">J'ai un litige avec un artisan</button>
+      <button class="sb" onclick="ss(this.textContent)">Je veux renégocier mon crédit</button>
+    </div>
+  </div>
+</div>
+
+<div class="ia">
+  <div class="mb" id="mb">
+    <div class="mw"><span></span><span></span><span></span><span></span><span></span></div>
+    <span class="ms">Écoute en cours...</span>
+    <button class="mstop" onclick="stopMic()">Arrêter</button>
+  </div>
+  <div class="fp" id="fp"><span>📄</span><span id="fn"></span><button class="fr" onclick="rf()">✕</button></div>
+  <div class="ir">
+    <textarea class="mi2" id="mi" placeholder="Décrivez votre situation ou uploadez un document..." rows="1" onkeydown="hk(event)" oninput="ar(this)"></textarea>
+    <div class="iac">
+      <input type="file" id="fi" accept=".pdf,.doc,.docx,.txt,.png,.jpg" style="display:none" onchange="hf(event)">
+      <button class="ub" onclick="document.getElementById('fi').click()">📎</button>
+      <button class="sndb" id="sb2" onclick="send()">→</button>
+    </div>
+  </div>
+  <div class="ih">Entrée pour envoyer · Shift+Entrée pour saut de ligne</div>
+</div>
+
+<div class="auth-overlay" id="auth-overlay" onclick="overlayClick(event)">
+  <div class="auth-card">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <h3 id="auth-title">Connexion</h3>
+    <p id="auth-sub">Accédez à Click'n Business avec votre compte.</p>
+    <div class="auth-err" id="auth-err"></div>
+    <div class="auth-field"><label>Email</label><input type="email" id="auth-email" placeholder="vous@exemple.com" autocomplete="email"></div>
+    <div class="auth-field"><label>Mot de passe</label><input type="password" id="auth-pwd" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')authSubmit()"></div>
+    <button class="auth-btn" id="auth-submit" onclick="authSubmit()">Se connecter</button>
+    <div class="auth-switch">Pas encore de compte ? <a onclick="toggleAuthMode()">S'inscrire</a></div>
+  </div>
+</div>
+
+<script>
+const SUPA_URL='https://rdpylbpbnukbmvazqlgm.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkcHlsYnBibnVrYm12YXpxbGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwOTY3NjcsImV4cCI6MjA5MTY3Mjc2N30.KVDiOtPeJwiwcJOCgi4nmb4DBxFNd7y7nlBErzT0tJA';
+const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+let cUser=null,authMode='login';
+supa.auth.getSession().then(({data})=>{cUser=data.session?.user||null;updAuth();});
+supa.auth.onAuthStateChange((ev,sess)=>{cUser=sess?.user||null;updAuth();if(ev==='SIGNED_IN')closeAuth();});
+function updAuth(){
+  const el=document.getElementById('auth-ui');
+  if(cUser){el.innerHTML=`<div class="ua"><span class="ue">${cUser.email}</span><button class="ulb" onclick="signOut()">Déconnexion</button></div>`;}
+  else{el.innerHTML=`<button class="nb" onclick="openAuth()">Se connecter</button>`;}
+}
+function openAuth(){document.getElementById('auth-overlay').classList.add('on');setTimeout(()=>document.getElementById('auth-email').focus(),50);}
+function closeAuth(){document.getElementById('auth-overlay').classList.remove('on');}
+function overlayClick(e){if(e.target===e.currentTarget)closeAuth();}
+function toggleAuthMode(){
+  authMode=authMode==='login'?'signup':'login';
+  const isLogin=authMode==='login';
+  document.getElementById('auth-title').textContent=isLogin?'Connexion':'Créer un compte';
+  document.getElementById('auth-sub').textContent=isLogin?"Accédez à Click'n Business avec votre compte.":"Rejoignez Click'n gratuitement.";
+  document.getElementById('auth-submit').textContent=isLogin?'Se connecter':"S'inscrire";
+  document.querySelector('.auth-switch').innerHTML=isLogin?"Pas encore de compte ? <a onclick=\"toggleAuthMode()\">S'inscrire</a>":"Déjà un compte ? <a onclick=\"toggleAuthMode()\">Se connecter</a>";
+  document.getElementById('auth-err').classList.remove('on');
+}
+async function authSubmit(){
+  const email=document.getElementById('auth-email').value.trim();
+  const pwd=document.getElementById('auth-pwd').value;
+  const btn=document.getElementById('auth-submit');
+  if(!email||!pwd){showAuthMsg('Veuillez remplir tous les champs.','err');return;}
+  btn.disabled=true;btn.textContent='...';
+  document.getElementById('auth-err').classList.remove('on');
+  const {error}=authMode==='login'
+    ?await supa.auth.signInWithPassword({email,password:pwd})
+    :await supa.auth.signUp({email,password:pwd});
+  btn.disabled=false;btn.textContent=authMode==='login'?'Se connecter':"S'inscrire";
+  if(error){showAuthMsg(error.message,'err');}
+  else if(authMode==='signup'){showAuthMsg('Vérifiez votre email pour confirmer votre inscription.','ok');}
+}
+function showAuthMsg(msg,type){const e=document.getElementById('auth-err');e.textContent=msg;e.className='auth-err on '+type;}
+async function signOut(){await supa.auth.signOut();}
+const W='https://clickn-api.soizic-henrio.workers.dev';
+const SYS=`Tu es Click'n Business, l'espace vie administrative de la plateforme Click'n (Tentakool). Tu es a la fois l'orchestrateur et tous les agents specialises. Tu identifies le domaine et tu apportes directement la bonne expertise.
+
+PROTOCOLE DOCUMENT UPLOADE :
+(1) Lire et identifier : emetteur, nature, action attendue, delais critiques.
+(2) Synthetiser en 2-3 lignes : "Ce document est [nature], il vient de [emetteur], il te demande de [action] avant le [date]."
+(3) Appliquer l'expertise du domaine correspondant.
+
+TES EXPERTISES PAR DOMAINE :
+
+=== FISCAL (DGFiP + service-public.fr + droit a l'erreur loi ESSOC) ===
+Signaux : impots / avis d'imposition / declaration revenus / taxe fonciere / credit d'impot / regularisation / reclamation fisc
+Analyser l'avis ou la demande, identifier l'erreur potentielle, expliquer les droits (droit a l'erreur loi ESSOC), preparer la reclamation.
+Reclamation fiscale : en ligne sur impots.gouv.fr ou courrier LRAR au centre des impots. Delai : 31 decembre de la 2eme annee suivant la mise en recouvrement.
+Mediateur fiscal : en cas de litige persistant, saisir le mediateur des ministeres economiques et financiers.
+
+=== LOGEMENT (ANIL/ADIL + loi ALUR + encadrement loyers) ===
+Signaux : bail / loyer / locataire / proprietaire / depot de garantie / APL / expulsion / travaux / copropriete
+Depot de garantie : restitution 1 mois (pas d'etat des lieux contradictoire) ou 2 mois. Depassement = majoration 10% par mois.
+Expulsion : procedure longue - assignation / jugement / commandement de quitter / concours de la force publique. ADIL locale pour aide gratuite.
+APL : calculateur CAF en ligne. Conditions : locataire / logement conventionne / ressources.
+Loyer impaye : mise en demeure LRAR d'abord. Puis injonction de payer tribunal judiciaire.
+
+=== ASSURANCES (UFC-Que Choisir + loi Lemoine + loi Hamon + loi Chatel) ===
+Signaux : assurance / mutuelle / sinistre / resiliation / remboursement / loi Lemoine
+Loi Lemoine (assurance emprunteur) : resiliation a tout moment depuis juin 2022. Economie potentielle significative.
+Loi Hamon : resiliation assurance auto/habitation a tout moment apres 1 an.
+Loi Chatel : obligation information avant reconduction tacite. Non-respect = resiliation gratuite.
+Sinistre : declaration dans les 5 jours ouvrés (2 jours pour vol). Conserver toutes les preuves.
+
+=== TELECOM (ARCEP + 60 Millions consommateurs) ===
+Signaux : forfait / operateur / fibre / box / resiliation / facture operateur / litige
+Resiliation : 10 jours ouvrables depuis la demande. Frais de resiliation = jours restants d'engagement (plafonnes).
+Mediateur telecom (mediateur-telecom.fr) : gratuit, obligatoire avant tribunal.
+Facture abusive : contester par ecrit, saisir l'ARCEP si non-reponse.
+
+=== CAF (CNAF + service-public.fr + approche sans honte) ===
+Signaux : CAF / RSA / prime d'activite / AAH / APL / droits sociaux / allocation
+RSA : conditions ressources + residant en France + 25 ans ou parent isolé.
+Prime d'activite : simulateur CAF en ligne. Pour les travailleurs avec revenus modestes.
+AAH : reconnaissance handicap MDPH + conditions ressources.
+Approche : jamais de jugement sur les droits. Ces aides existent pour etre utilisees.
+
+=== PREVOYANCE (Housel + info-retraite.fr) ===
+Signaux : retraite / points retraite / PER / arret travail / assurance vie / trimestres
+Releve de carriere : info-retraite.fr. Verifier les periodes et signaler les erreurs.
+PER (Plan Epargne Retraite) : deductible des revenus imposables dans la limite du plafond.
+Arret travail : maintien salaire selon convention collective + indemnites journalieres SS.
+
+=== CREDIT ET BANQUE (Fisher-Ury + loi Lemoine + Banque de France) ===
+Signaux : credit / pret immobilier / renegociation / assurance emprunteur / surendettement / FICP
+Renegociation pret : comparer le cout total (IRA + frais dossier) vs economie mensuelle. Courtier souvent plus efficace.
+Loi Lemoine assurance emprunteur : changer a tout moment, sans questionnaire medical pour prets < 200k euros rembourses avant 60 ans.
+Surendettement : dossier Banque de France gratuit. Suspension des poursuites pendant l'instruction.
+
+=== LITIGES ET RECOURS (UFC-Que Choisir + Fisher-Ury + DGCCRF + Code conso) ===
+Signaux : litige / recours / mise en demeure / produit defectueux / artisan / arnaque / garantie / retour commande
+REGLE 1 : verifier l'assurance protection juridique (habitation) EN PREMIER - souvent incluse et inconnue.
+Garantie legale conformite : 2 ans produit neuf. 12 premiers mois : defaut presume a la livraison.
+Vices caches : 2 ans depuis decouverte (article 1641 Code civil).
+Retractation achat en ligne : 14 jours sans motif.
+Strategie escalade : (1) contact amiable ecrit / (2) mise en demeure LRAR / (3) mediateur gratuit / (4) tribunal judiciaire jusqu'a 10k euros sans avocat.
+signal.conso.gouv.fr : signalement DGCCRF pour pratiques abusives.
+Defenseur des droits (defenseurdesdroits.fr) : gratuit pour litiges services publics.
+JAMAIS de conseil definitif engageant - rapport cout/benefice systematique.
+
+URGENCES :
+Huissier / commandement de payer / expulsion / delai < 15 jours → signaler immediatement + ADIL (adil.org) ou Point-Justice.
+Arnaque financiere → plainte + chargeback banque + signal.conso.gouv.fr en parallele.
+Surendettement → Banque de France gratuit.
+Coupure energie / sans logement → 115 ou CCAS de la commune.
+
+REGLES GENERALES :
+Tutoiement si l'utilisateur l'initie. Langage simple, zero jargon non explique.
+Documents uploades : lire et analyser avant tout.
+Preparer les courriers de reclamation directement dans le chat.
+Ne jamais presenter un recours paye avant d'avoir verifie les recours gratuits.
+DEMARRAGE : "Bonjour ! Tu peux me soumettre un courrier, une facture ou un contrat, ou me decrire ta situation. Je trouve la bonne casquette et on avance ensemble."`;
+
+let hist=[],uf=null,rec=null,mic=false;
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function ss(t){document.getElementById('mi').value=t;send();}
+function hf(e){const f=e.target.files[0];if(!f)return;uf=f;document.getElementById('fn').textContent=f.name;document.getElementById('fp').classList.add('on');}
+function rf(){uf=null;document.getElementById('fi').value='';document.getElementById('fp').classList.remove('on');}
+function b64(f){return new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result.split(',')[1]);x.onerror=j;x.readAsDataURL(f);});}
+async function send(){
+  const inp=document.getElementById('mi');const t=inp.value.trim();
+  if(!t&&!uf)return;
+  if(!cUser){openAuth();return;}
+  document.getElementById('sb2').disabled=true;
+  const wm=document.getElementById('wm');if(wm)wm.style.display='none';
+  addMsg('u',t+(uf?` [📎 ${uf.name}]`:''));
+  inp.value='';inp.style.height='auto';
+  let mc;
+  if(uf&&(uf.type==='application/pdf'||uf.type.startsWith('image/'))){
+    const d=await b64(uf);mc=[...(t?[{type:'text',text:t}]:[]),{type:uf.type.startsWith('image/')?'image':'document',source:{type:'base64',media_type:uf.type,data:d}}];
+  } else {mc=t+(uf?` [Fichier : ${uf.name}]`:'');}
+  rf();hist.push({role:'user',content:mc});if(hist.length>40)hist=hist.slice(-40);
+  const tid=showT();
+  try{
+    const res=await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:2000,system:SYS,messages:hist})});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'Je n\'ai pas bien compris. Reformulez ?';
+    hist.push({role:'assistant',content:reply});hideT(tid);addMsg('a',reply);
+  }catch(e){hideT(tid);addMsg('a','Erreur : '+e.message,true);console.error(e);}
+  document.getElementById('sb2').disabled=false;
+}
+function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');}
+function addMsg(role,text,err=false){
+  const ca=document.getElementById('ca');const row=document.createElement('div');row.className='mr '+(role==='a'?'a':'u');
+  const av=document.createElement('div');av.className='av';av.textContent=role==='a'?'B':'V';
+  const b=document.createElement('div');b.className=err?'em':'bb';b.innerHTML=fmt(text);
+  row.appendChild(av);row.appendChild(b);ca.appendChild(row);ca.scrollTop=ca.scrollHeight;
+}
+let tc=0;
+function showT(){
+  const id='t'+(++tc);const ca=document.getElementById('ca');
+  const row=document.createElement('div');row.className='ti';row.id=id;
+  const av=document.createElement('div');av.className='av';av.style.cssText='background:var(--c);color:var(--or);font-family:Playfair Display,serif';av.textContent='B';
+  const b=document.createElement('div');b.className='tb';b.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
+  row.appendChild(av);row.appendChild(b);ca.appendChild(row);ca.scrollTop=ca.scrollHeight;return id;
+}
+function hideT(id){const el=document.getElementById(id);if(el)el.remove();}
+function newConv(){
+  hist=[];
+  document.getElementById('ca').innerHTML=`<div class="wm" id="wm"><div class="wi">🏠</div><h2>Nouvelle conversation</h2><p>Je suis prêt. Décrivez votre situation ou uploadez un document.</p><div class="ws"><button class="sb" onclick="ss(this.textContent)">Impôts</button><button class="sb" onclick="ss(this.textContent)">Logement</button><button class="sb" onclick="ss(this.textContent)">Assurance</button><button class="sb" onclick="ss(this.textContent)">CAF</button><button class="sb" onclick="ss(this.textContent)">Litige</button></div></div>`;
+}
+function toggleMic(){if(mic)stopMic();else startMic();}
+function startMic(){
+  if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)){alert('Nécessite Chrome.');return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  rec=new SR();rec.lang='fr-FR';rec.continuous=true;rec.interimResults=true;rec.maxAlternatives=1;
+  rec.onstart=()=>{mic=true;document.getElementById('mt').classList.add('on');document.getElementById('mb').classList.add('on');};
+  rec.onresult=(e)=>{let f='',i='';for(let x=e.resultIndex;x<e.results.length;x++){if(e.results[x].isFinal)f+=e.results[x][0].transcript;else i+=e.results[x][0].transcript;}document.getElementById('mi').value=(f||i).trim();};
+  rec.onerror=rec.onend=()=>stopMic();rec.start();
+}
+function stopMic(){if(rec)rec.stop();mic=false;document.getElementById('mt').classList.remove('on');document.getElementById('mb').classList.remove('on');const t=document.getElementById('mi').value.trim();if(t)setTimeout(()=>send(),300);}
+</script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+</html>
